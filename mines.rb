@@ -3,9 +3,9 @@ EMPTY = " "
 
 def new_minesweeper_game(length, width, mine_count)
     board = Array.new(length) { |k| Array.new(width) {|k| EMPTY} }
-    locations = random_subset((length*width).times, mine_count)
+    locations = random_subset((length*width).times.to_a, mine_count)
     locations.each do |idx|
-        x, y = idx / length, idx % length
+        x, y = idx % length, idx / length
         board[x][y] = MINE
     end
     board
@@ -14,7 +14,7 @@ end
 def random_subset(list, select)
     new_list = list.dup
     list.length.times do |idx|
-        tmp = random.rand_int(0, idx+1)
+        tmp = rand(idx+1)
         new_list[idx] = new_list[tmp]
         new_list[tmp] = list[idx]
     end
@@ -34,7 +34,7 @@ def generate_adjacencies(board)
             neighbors.each do |x, y|
                 if board[x][y] == EMPTY
                     board[x][y] = 1
-                else
+                elsif board[x][y].is_a? Integer
                     board[x][y] += 1
                 end
             end
@@ -46,7 +46,7 @@ end
 def neighbors(cell_coordinates, board_length, board_width)
     [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1,1]].map do |pair|
         [pair[0]+cell_coordinates[0], pair[1]+cell_coordinates[1]]
-    end.filter do |x, y|
+    end.select do |x, y|
         not (x < 0 or y < 0 or x >= board_width or y >= board_length)
     end
 end
@@ -62,7 +62,7 @@ def click_cell(board, click_coordinates)
         return false
     elsif cell_value == EMPTY
         board[click_coordinates[0]][click_coordinates[1]] = 0
-        neighbors(click_coordinates, row.length, board.length).each do |new_coords|
+        neighbors(click_coordinates, board[0].length, board.length).each do |new_coords|
             click_cell(board, new_coords)
         end
     end
