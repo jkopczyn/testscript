@@ -101,5 +101,16 @@ def click_cell_mutator(board, click_coordinates)
     end
 end
 
+def print_board(board)
+    width = board[0].length
+    blank_row = "#{" -"*width} \n"
+    puts "#{blank_row}#{board.map do |row|
+        "|#{row.join("|")}|\n"
+    end.join(blank_row)}#{blank_row}\n\n"
+end
+
 b = new_minesweeper_game(9,12,10); b2 = generate_adjacencies(b)
+print_board(b)
+print_board(b2)
 c = new_minesweeper_game_with_adjacencies(9,12,10)
+print_board(c)
