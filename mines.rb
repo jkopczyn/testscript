@@ -13,6 +13,17 @@ def new_minesweeper_game(length, width, mine_count)
     board
 end
 
+def new_minesweeper_game_with_adjacencies(length, width, mine_count)
+    board = Array.new(length) { |k| Array.new(width) {|k| EMPTY} }
+    locations = random_subset((length*width).times.to_a, mine_count)
+    locations.each do |idx|
+        y, x = idx / width, idx % width
+        board[y][x] = MINE
+        increment_neighbors(board, [x,y])
+    end
+    board
+end
+
 def random_subset(list, select)
     new_list = list.dup
     list.length.times do |idx|
@@ -33,17 +44,26 @@ def generate_adjacencies(board)
     b2.each_with_index do |row, y_idx|
         row.each_with_index do |cell, x_idx|
             next unless cell == MINE
-            neighbors = neighbors([x_idx, y_idx], row.length, b2.length)
-            neighbors.each do |x, y|
-                if b2[y][x] == EMPTY
-                    b2[y][x] = 1
-                elsif b2[y][x].is_a? Integer
-                    b2[y][x] += 1
-                end
-            end
+            increment_neighbors(b2, [x_idx, y_idx])
         end
     end
 end
+
+def increment_neighbors(board, cell_coords)
+    neighbors = neighbors(
+        [cell_coords[0], cell_coords[1]],
+        board[0].length,
+        board.length
+    )
+    neighbors.each do |x, y|
+        if board[y][x] == EMPTY
+            board[y][x] = 1
+        elsif board[y][x].is_a? Integer
+            board[y][x] += 1
+        end
+    end
+end
+
 
 KING_MOVES =[[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1,1]]
 
@@ -82,3 +102,4 @@ def click_cell_mutator(board, click_coordinates)
 end
 
 b = new_minesweeper_game(9,12,10); b2 = generate_adjacencies(b)
+c = new_minesweeper_game_with_adjacencies(9,12,10)
