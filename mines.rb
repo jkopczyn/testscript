@@ -29,7 +29,7 @@ end
 #| 1 1 1 |
 
 def generate_adjacencies(board)
-    b2 = Duplicate.duplicate(board)
+    b2 = duplicate(board)
     b2.each_with_index do |row, y_idx|
         row.each_with_index do |cell, x_idx|
             next unless cell == MINE
@@ -45,8 +45,10 @@ def generate_adjacencies(board)
     end
 end
 
+KING_MOVES =[[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1,1]]
+
 def neighbors(cell_coordinates, board_length, board_width)
-    [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1,1]].map do |pair|
+    KING_MOVES.map do |pair|
         [pair[0]+cell_coordinates[0], pair[1]+cell_coordinates[1]]
     end.select do |x, y|
         not (x < 0 or y < 0 or y >= board_width or x >= board_length)
@@ -58,15 +60,25 @@ end
 # If NUMBER -> expose
 
 def click_cell(board, click_coordinates)
-    cell_value = board[click_coordinates[0]][click_coordinates[1]]
-    if cell_value == MINE
+    if board[click_coordinates[1]][click_coordinates[0]] == MINE
         print "YOU DIED!"
         return false
-    elsif cell_value == EMPTY
-        board[click_coordinates[0]][click_coordinates[1]] = 0
-        neighbors(click_coordinates, board[0].length, board.length).each do |new_coords|
-            click_cell(board, new_coords)
-        end
     end
-    return board
+    new_board = duplicate(board)
+    click_cell_mutator(new_board, click_coordinates)
+    new_board
 end
+
+def click_cell_mutator(board, click_coordinates)
+    if board[click_coordinates[1]][click_coordinates[0]] == EMPTY
+        board[click_coordinates[1]][click_coordinates[0]] = 0
+        neighbors(
+            click_coordinates,
+            board[0].length,
+            board.length
+        ).each { |new_coords|
+            click_cell_mutator(board, new_coords) }
+    end
+end
+
+b = new_minesweeper_game(9,12,10); b2 = generate_adjacencies(b)
