@@ -1,3 +1,5 @@
+require "duplicate"
+
 MINE = "*"
 EMPTY = " "
 
@@ -5,7 +7,7 @@ def new_minesweeper_game(length, width, mine_count)
     board = Array.new(length) { |k| Array.new(width) {|k| EMPTY} }
     locations = random_subset((length*width).times.to_a, mine_count)
     locations.each do |idx|
-        x, y = idx % length, idx / length
+        x, y = idx / width, idx % width
         board[x][y] = MINE
     end
     board
@@ -27,27 +29,27 @@ end
 #| 1 1 1 |
 
 def generate_adjacencies(board)
-    board.each_with_index do |row, y_idx|
+    b2 = Duplicate.duplicate(board)
+    b2.each_with_index do |row, y_idx|
         row.each_with_index do |cell, x_idx|
             next unless cell == MINE
-            neighbors = neighbors([x_idx, y_idx], row.length, board.length)
+            neighbors = neighbors([x_idx, y_idx], row.length, b2.length)
             neighbors.each do |x, y|
-                if board[x][y] == EMPTY
-                    board[x][y] = 1
-                elsif board[x][y].is_a? Integer
-                    board[x][y] += 1
+                if b2[y][x] == EMPTY
+                    b2[y][x] = 1
+                elsif b2[y][x].is_a? Integer
+                    b2[y][x] += 1
                 end
             end
         end
     end
-    return board
 end
 
 def neighbors(cell_coordinates, board_length, board_width)
     [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1,1]].map do |pair|
         [pair[0]+cell_coordinates[0], pair[1]+cell_coordinates[1]]
     end.select do |x, y|
-        not (x < 0 or y < 0 or x >= board_width or y >= board_length)
+        not (x < 0 or y < 0 or y >= board_width or x >= board_length)
     end
 end
 
