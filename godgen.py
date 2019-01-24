@@ -2,16 +2,22 @@ import random
 
 domains = []
 while True:
-    domains.append(random.randint(1,4))
-    if random.randint(1,2) == 1 and len(domains) >= 2:
+    domains.append(random.randint(0,3))
+    if random.randint(1,2) == 1:
         break
 
-dom_table = {
-        1: ["Play", "Fertility/Harvest/Babies", "Health/Disease", "Hunt", "Hearth", "Doors/Household Safety", "Baking", "Wine/Beer", "Sewing/Weaving", "Wealth", "Household Item", "Food (particular)", "Important Commodity", "Male Virility", "Bridges/Gates/Crossing/Crossroads", "Fidelity/Adultery", "Animal Husbandry", "Gossip/Reputation", "Books/Scrolls", "Important Domestic Animal/Insect"],
-        2: ["Invention", "War", "Indulgence", "Theft/Kidnapping", "Travel/Hospitality to Strangers", "Sailing", "Building", "Exploration/Adventure", "Cannibalism", "Honor/Justice/Vengeance", "Trade/Commerce/Unexpected Windfalls", "Slavery/Freedom", "Learning/Ignorance", "Hiding", "Art/Poetry", "Healing", "Protector of Our People", "Mining", "Sport", "Gambling"],
-        3: ["Animal", "Mountains", "Night", "Oceans", "Season (1d4: Spring/Summer/Autumn/Winter)", "Plants/Woods", "Predominant Local Climate/Weather Type", "Fresh Waters", "Natural Disasters", "Thunder / Storms /Monsoon Season", "Death/Destruction", "Sun", "Moon", "Planet/Stars", "Air", "Fire", "Earth", "Water (all)", "Natural Beauty", "Decay (and rebirth)"],
-        4: ["Wisdom", "Compassion", "Tricks", "Protection from Spirits", "Miracles", "Afterlife", "Pre-life", "Karma", "Undead", "Laughter", "Song", "Love/Sex", "Destiny/Fate", "Dreams", "Fear/Bravery", "Greed/Generosity", "Jealousy/Equanimity", "Hate/Love (non-romantic)", "Abstinance/Indulgence", "Bardo (Trial grounds between lifetimes)"]
-        }
+if len(domains) < 2:
+    domains.append(random.randint(0,3))
 
-purviews = [dom_table[d][random.randint(0,19)] for d in domains]
+dom_table = [["Play/Tricksters/Sports", "Farming/Harvest", "Virility/Fertility/Babies", "Health/Disease", "Hunt", "Hearth", "Family", "Baking", "Wine/Beer", "Sewing/Weaving", "Wealth", "Household Item", "Food (particular)", "Important Commodity", "Marriage/Fidelity", "Doors/Bridges/Gates/Crossing/Crossroads", "Herding/Animal Husbandry/Domestic Animals", "Gossip/Reputation", "Books/Scrolls/Knowledge", "Important Domestic Animal or Insect"],
+
+["Invention", "War/Peace", "Indulgence", "Theft/Kidnapping", "Travel/Hospitality to Strangers", "Sailing", "Building", "Exploration/Adventure", "Cannibalism", "Honor/Justice/Vengeance", "Trade/Commerce", "Slavery/Freedom", "Learning/Ignorance", "Luck/Skill", "Art/Poetry/Music", "Healing", "Protector of Our People", "Mining", "Sport", "Gambling"],
+
+["Animal", "Mountains/Hills/Stone", "Night/Darkness", "Oceans", "Spring/Fall", "Summer/Winter", "Plants/Forests", "Local Climate/Weather", "Rivers/Lakes/Springs", "Natural Disasters/Storms", "Death", "Destruction", "Sun", "Moon", "Planet/Stars", "Air/Earth", "Fire/Water", "Volcanoes", "Natural Beauty", "Decay/Rebirth"],
+
+["Wisdom/Ethics", "Compassion", "Bigotry/Madness", "Time/Distance", "Murder/Deceit", "Dedication", "Afterlife/Pre-life", "Karma", "Undead", "Laughter/Humor", "Song", "Love(eros)/Sex", "Destiny/Fate", "Dreams", "Fear/Bravery", "Greed/Generosity", "Jealousy/Equanimity", "Hate/Love(philia)", "Abstinance/Indulgence", "Magic"]]
+
+
+pur_nums = [random.randint(0,19) for d in domains]
+purviews = [dom_table[domains[idx]][pur_nums[idx]] for idx in xrange(len(domains))]
 print purviews, random.choice(['male']*10+['female']*10+['androgynous'])
