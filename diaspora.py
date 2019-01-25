@@ -36,5 +36,33 @@ def sysgen(num=1):
 def translate(t,e,r):
     return ((t,e,r),(techs[t], envs[e], resos[r]))
 
+def clustergen(num=6):
+    sys = sysgen(num)
+    conns = []
+    incoming = {}
+    for i in xrange(1,num+1):
+        incoming[i] = 0
+    for i in xrange(1,num):
+        conn = fdf()
+        incoming[i+1] += 1
+        conns.append((i,i+1))
+        if conn > 0 and next_isolate(incoming, i):
+            j = next_isolate(incoming, i)
+            conns.append((i,j))
+            incoming[j] += 1
+        if conn >= 0 and next_isolate(incoming, i):
+            j = next_isolate(incoming, i)
+            conns.append((i,j))
+            incoming[j] += 1
+    return (sys, conns)
 
-print sysgen()
+
+def next_isolate(incoming, n):
+    m = max(incoming.keys())
+    for i in xrange(n+1,m+1):
+        if incoming[i] == 0:
+            return i
+    return None
+
+
+print clustergen(9+fdf())
